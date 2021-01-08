@@ -15,7 +15,7 @@ import javax.persistence.ManyToMany;
 import javax.persistence.Table;
 
 @Entity
-@Table(name= "Tb_Order")
+@Table(name = "Tb_Order")
 public class Order implements Serializable {
 
 	private static final long serialVersionUID = 1L;
@@ -34,11 +34,14 @@ public class Order implements Serializable {
 
 	private Double total;
 
+	private String address;
+
 	@ManyToMany
 	@JoinTable(name = "Tb_Order_Product", joinColumns = @JoinColumn(name = "order_id"), inverseJoinColumns = @JoinColumn(name = "product_id"))
 	private List<Product> products = new ArrayList<>();
 
-	public Order(Long id, Double latitude, Double longitude, Instant moment, OrderStatus status, Double total) {
+	public Order(Long id, Double latitude, Double longitude, Instant moment, OrderStatus status, Double total,
+			String address) {
 		super();
 		this.id = id;
 		this.latitude = latitude;
@@ -46,6 +49,7 @@ public class Order implements Serializable {
 		this.moment = moment;
 		this.status = status;
 		this.total = total;
+		this.address = address;
 	}
 
 	public Long getId() {
@@ -94,6 +98,14 @@ public class Order implements Serializable {
 
 	public void setTotal(Double total) {
 		this.total = total;
+	}
+
+	public String getAddress() {
+		return address;
+	}
+
+	public void setAddress(String address) {
+		this.address = address;
 	}
 
 	@Override
