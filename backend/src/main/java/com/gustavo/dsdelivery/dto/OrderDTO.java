@@ -1,27 +1,18 @@
-package com.gustavo.dsdelivery.entities;
+package com.gustavo.dsdelivery.dto;
 
 import java.io.Serializable;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.JoinTable;
-import javax.persistence.ManyToMany;
-import javax.persistence.Table;
+import com.gustavo.dsdelivery.entities.Order;
+import com.gustavo.dsdelivery.entities.OrderStatus;
+import com.gustavo.dsdelivery.entities.Product;
 
-@Entity
-@Table(name = "Tb_Order")
-public class Order implements Serializable {
+public class OrderDTO implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 
-	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 
 	private Double latitude;
@@ -36,11 +27,9 @@ public class Order implements Serializable {
 
 	private String address;
 
-	@ManyToMany
-	@JoinTable(name = "Tb_Order_Product", joinColumns = @JoinColumn(name = "order_id"), inverseJoinColumns = @JoinColumn(name = "product_id"))
-	private List<Product> products = new ArrayList<>();
+	private List<ProductDTO> products = new ArrayList<>();
 
-	public Order(Long id, Double latitude, Double longitude, Instant moment, OrderStatus status, Double total,
+	public OrderDTO(Long id, Double latitude, Double longitude, Instant moment, OrderStatus status, Double total,
 			String address) {
 		super();
 		this.id = id;
@@ -52,8 +41,22 @@ public class Order implements Serializable {
 		this.address = address;
 	}
 	
-	public Order () {
+	public OrderDTO() {
 		
+	}
+
+	public OrderDTO(Order order) {
+		this.id = order.getId();
+		this.address = order.getAddress();
+		this.latitude = order.getLatitude();
+		this.longitude = order.getLongitude();
+		this.moment = order.getMoment();
+		this.status = order.getStatus();
+	}
+
+	public OrderDTO(Order order, List<Product> products) {
+		this(order);
+		products.stream().map(product -> this.products.add(new ProductDTO(product)));
 	}
 
 	public Long getId() {
@@ -111,15 +114,14 @@ public class Order implements Serializable {
 	public void setAddress(String address) {
 		this.address = address;
 	}
-	
-	public List<Product> getProducts() {
+
+	public List<ProductDTO> getProducts() {
 		return products;
 	}
-	
-	public void setProducts(List<Product> products) {
+
+	public void setProducts(List<ProductDTO> products) {
 		this.products = products;
 	}
-	
 
 	@Override
 	public int hashCode() {
@@ -137,7 +139,7 @@ public class Order implements Serializable {
 			return false;
 		if (getClass() != obj.getClass())
 			return false;
-		Order other = (Order) obj;
+		OrderDTO other = (OrderDTO) obj;
 		if (id == null) {
 			if (other.id != null)
 				return false;
