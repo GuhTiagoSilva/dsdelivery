@@ -56,7 +56,7 @@ public class OrderDTO implements Serializable {
 
 	public OrderDTO(Order order, List<Product> products) {
 		this(order);
-		products.stream().map(product -> this.products.add(new ProductDTO(product)));
+		products.forEach(product -> this.products.add(new ProductDTO(product)));
 	}
 
 	public Long getId() {

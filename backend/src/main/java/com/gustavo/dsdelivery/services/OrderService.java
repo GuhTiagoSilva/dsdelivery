@@ -16,6 +16,7 @@ import com.gustavo.dsdelivery.entities.Order;
 import com.gustavo.dsdelivery.entities.Product;
 import com.gustavo.dsdelivery.repositories.OrderRepository;
 import com.gustavo.dsdelivery.repositories.ProductRepository;
+import com.gustavo.dsdelivery.services.exceptions.DatabaseException;
 import com.gustavo.dsdelivery.services.exceptions.ResourceNotFoundException;
 
 @Service
@@ -39,7 +40,7 @@ public class OrderService {
 	public OrderDTO findById(Long id) {
 		Optional<Order> order = repository.findById(id);
 		Order entity = order.orElseThrow(() -> new ResourceNotFoundException("Entity Not Found"));
-		return new OrderDTO(entity);
+		return new OrderDTO(entity, entity.getProducts());
 	}
 
 	@Transactional
@@ -62,7 +63,7 @@ public class OrderService {
 		} catch (EmptyResultDataAccessException e) {
 			throw new ResourceNotFoundException("Id Not Found: " + id);
 		} catch (DataIntegrityViolationException e) {
-
+			throw new DatabaseException(e.getMessage());
 		}
 	}
 
